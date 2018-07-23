@@ -7,7 +7,10 @@ const VueDraggableOptions = {
     showDropzoneAreas: true,
     onDrop: () => {},
     onDragstart: () => {},
-    onDragend: () => {}
+    onDragend: () => {},
+    onDragenter: () => {},
+    onDragleave: () => {},
+    onDragover: () => {}
   },
   targets: null,
   items: null,

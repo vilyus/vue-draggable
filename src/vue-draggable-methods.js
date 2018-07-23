@@ -347,10 +347,17 @@ const VueDraggableMethods = {
     // dragenter event to set that variable
     el.addEventListener('dragenter', (e) => {
       this.related = e.target;
+      if (typeof this.defaultOptions.onDragenter === 'function') {
+        this.defaultOptions.onDragenter({
+          nativeEvent: e,
+          stop: this.stopDragAndDrop,
+          ...this.selections
+        });
+      }
     }, false);
 
     // dragleave event to maintain target highlighting using that variable
-    el.addEventListener('dragleave', () => {
+    el.addEventListener('dragleave', (e) => {
       // get a drop target reference from the relatedTarget
       let droptarget = this.getContainer(this.related);
 
@@ -375,6 +382,13 @@ const VueDraggableMethods = {
 
         // then save that reference for next time
         this.selections.droptarget = droptarget;
+        if (typeof this.defaultOptions.onDragleave === 'function') {
+          this.defaultOptions.onDragleave({
+            nativeEvent: e,
+            stop: this.stopDragAndDrop,
+            ...this.selections
+          });
+        }
       }
     }, false);
 
@@ -383,6 +397,13 @@ const VueDraggableMethods = {
       // if we have any selected items, allow them to be dragged
       if (this.selections.items.length) {
         e.preventDefault();
+      }
+      if (typeof this.defaultOptions.onDragover === 'function') {
+        this.defaultOptions.onDragover({
+          nativeEvent: e,
+          stop: this.stopDragAndDrop,
+          ...this.selections
+        });
       }
     }, false);
 
@@ -422,7 +443,7 @@ const VueDraggableMethods = {
             nativeEvent: e,
             stop: () => {
               throw new Error(`Stop method is available only for callbacks
-                'onDragstart' and 'onDragend'. For more info look at
+                'onDragstart', 'onDragenter', 'onDragover', 'onDragleave' and 'onDragend'. For more info look at
                 https://github.com/Vivify-Ideas/vue-draggable/blob/master/README.md
               `);
             },
